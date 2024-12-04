@@ -1,5 +1,7 @@
 use std::io::{stdin, BufRead, BufReader};
 
+use advent_of_code::{Grid, Location};
+
 fn main() {
     let reader = BufReader::new(stdin());
     let mut lines = Vec::new();
@@ -9,79 +11,21 @@ fn main() {
         line_length = line.len();
         lines.push(line);
     }
-    let body = lines.join("");
-    dbg!(&body.len());
+    let grid = Grid::new(lines.join("").chars(), line_length);
 
-    part1(&body, line_length);
-    part2(&body, line_length);
+    part1(&grid);
+    part2(&grid);
 }
 
-#[derive(Clone, Debug)]
-struct Coord {
-    x: usize,
-    y: usize,
-}
-
-fn index_to_coord(line_length: usize, index: usize) -> Coord {
-    return Coord {
-        x: index % line_length,
-        y: index / line_length,
-    };
-}
-
-fn coord_to_index(line_length: usize, coord: &Coord) -> usize {
-    return coord.y * line_length + coord.x;
-}
-
-fn move_left(coord: &Coord) -> Option<Coord> {
-    if coord.x > 0 {
-        Some(Coord {
-            x: coord.x - 1,
-            y: coord.y,
-        })
-    } else {
-        None
-    }
-}
-
-fn move_right(line_length: usize, coord: &Coord) -> Option<Coord> {
-    if coord.x + 1 < line_length {
-        Some(Coord {
-            x: coord.x + 1,
-            y: coord.y,
-        })
-    } else {
-        None
-    }
-}
-
-fn move_down(coord: &Coord) -> Coord {
-    Coord {
-        x: coord.x,
-        y: coord.y + 1,
-    }
-}
-
-fn move_up(coord: &Coord) -> Option<Coord> {
-    if coord.y > 0 {
-        Some(Coord {
-            x: coord.x,
-            y: coord.y - 1,
-        })
-    } else {
-        None
-    }
-}
-
-fn check_down(body: &str, line_length: usize, search_text: &str, start: &Coord) -> bool {
+fn check_down(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
     let mut locations = vec![start.clone()];
     for _ in 1..search_text.len() {
-        locations.push(move_down(locations.last().unwrap()))
+        locations.push(locations.last().unwrap().down())
     }
 
     let target_str: Option<String> = locations
         .iter()
-        .map(|coord| body.chars().nth(coord_to_index(line_length, coord)))
+        .map(|location| grid.get(location))
         .collect();
     match target_str {
         None => false,
@@ -89,10 +33,27 @@ fn check_down(body: &str, line_length: usize, search_text: &str, start: &Coord) 
     }
 }
 
-fn check_right(body: &str, line_length: usize, search_text: &str, start: &Coord) -> bool {
+fn check_right(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
     let mut locations = vec![start.clone()];
     for _ in 1..search_text.len() {
-        let new_location = move_right(line_length, locations.last().unwrap());
+        let new_location = locations.last().unwrap().right();
+        locations.push(new_location);
+    }
+
+    let target_str: Option<String> = locations
+        .iter()
+        .map(|location| grid.get(location))
+        .collect();
+    match target_str {
+        None => false,
+        Some(target) => &target == search_text,
+    }
+}
+
+fn check_diagonal_left(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
+    let mut locations = vec![start.clone()];
+    for _ in 1..search_text.len() {
+        let new_location = locations.last().unwrap().down().left();
         if let Some(new_location) = new_location {
             locations.push(new_location);
         } else {
@@ -102,7 +63,7 @@ fn check_right(body: &str, line_length: usize, search_text: &str, start: &Coord)
 
     let target_str: Option<String> = locations
         .iter()
-        .map(|coord| body.chars().nth(coord_to_index(line_length, coord)))
+        .map(|location| grid.get(location))
         .collect();
     match target_str {
         None => false,
@@ -110,10 +71,27 @@ fn check_right(body: &str, line_length: usize, search_text: &str, start: &Coord)
     }
 }
 
-fn check_diagonal_left(body: &str, line_length: usize, search_text: &str, start: &Coord) -> bool {
+fn check_diagonal_right(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
     let mut locations = vec![start.clone()];
     for _ in 1..search_text.len() {
-        let new_location = move_left(&move_down(locations.last().unwrap()));
+        let new_location = locations.last().unwrap().down().right();
+        locations.push(new_location);
+    }
+
+    let target_str: Option<String> = locations
+        .iter()
+        .map(|location| grid.get(location))
+        .collect();
+    match target_str {
+        None => false,
+        Some(target) => &target == search_text,
+    }
+}
+
+fn check_diagonal_up_right(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
+    let mut locations = vec![start.clone()];
+    for _ in 1..search_text.len() {
+        let new_location = locations.last().unwrap().right().up();
         if let Some(new_location) = new_location {
             locations.push(new_location);
         } else {
@@ -123,7 +101,7 @@ fn check_diagonal_left(body: &str, line_length: usize, search_text: &str, start:
 
     let target_str: Option<String> = locations
         .iter()
-        .map(|coord| body.chars().nth(coord_to_index(line_length, coord)))
+        .map(|location| grid.get(location))
         .collect();
     match target_str {
         None => false,
@@ -131,10 +109,14 @@ fn check_diagonal_left(body: &str, line_length: usize, search_text: &str, start:
     }
 }
 
-fn check_diagonal_right(body: &str, line_length: usize, search_text: &str, start: &Coord) -> bool {
+fn check_diagonal_up_left(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
     let mut locations = vec![start.clone()];
     for _ in 1..search_text.len() {
-        let new_location = move_right(line_length, &move_down(locations.last().unwrap()));
+        let new_location = locations
+            .last()
+            .unwrap()
+            .left()
+            .and_then(|location| location.up());
         if let Some(new_location) = new_location {
             locations.push(new_location);
         } else {
@@ -144,7 +126,7 @@ fn check_diagonal_right(body: &str, line_length: usize, search_text: &str, start
 
     let target_str: Option<String> = locations
         .iter()
-        .map(|coord| body.chars().nth(coord_to_index(line_length, coord)))
+        .map(|location| grid.get(location))
         .collect();
     match target_str {
         None => false,
@@ -152,72 +134,18 @@ fn check_diagonal_right(body: &str, line_length: usize, search_text: &str, start
     }
 }
 
-fn check_diagonal_up_right(
-    body: &str,
-    line_length: usize,
-    search_text: &str,
-    start: &Coord,
-) -> bool {
-    let mut locations = vec![start.clone()];
-    for _ in 1..search_text.len() {
-        let new_location =
-            move_up(locations.last().unwrap()).and_then(|coord| move_right(line_length, &coord));
-        if let Some(new_location) = new_location {
-            locations.push(new_location);
-        } else {
-            return false;
-        }
-    }
-
-    let target_str: Option<String> = locations
-        .iter()
-        .map(|coord| body.chars().nth(coord_to_index(line_length, coord)))
-        .collect();
-    match target_str {
-        None => false,
-        Some(target) => &target == search_text,
-    }
-}
-
-fn check_diagonal_up_left(
-    body: &str,
-    line_length: usize,
-    search_text: &str,
-    start: &Coord,
-) -> bool {
-    let mut locations = vec![start.clone()];
-    for _ in 1..search_text.len() {
-        let new_location = move_up(locations.last().unwrap()).and_then(|coord| move_left(&coord));
-        if let Some(new_location) = new_location {
-            locations.push(new_location);
-        } else {
-            return false;
-        }
-    }
-
-    let target_str: Option<String> = locations
-        .iter()
-        .map(|coord| body.chars().nth(coord_to_index(line_length, coord)))
-        .collect();
-    match target_str {
-        None => false,
-        Some(target) => &target == search_text,
-    }
-}
-
-fn part1(body: &str, line_length: usize) {
+fn part1(body: &Grid<char>) {
     let mut hit_count = 0;
-    for (i, _) in body.char_indices() {
-        let coord = index_to_coord(line_length, i);
+    for location in body.iter_locations() {
         let hits = [
-            check_down(&body, line_length, "XMAS", &coord),
-            check_right(&body, line_length, "XMAS", &coord),
-            check_diagonal_left(&body, line_length, "XMAS", &coord),
-            check_diagonal_right(&body, line_length, "XMAS", &coord),
-            check_down(&body, line_length, "SAMX", &coord),
-            check_right(&body, line_length, "SAMX", &coord),
-            check_diagonal_left(&body, line_length, "SAMX", &coord),
-            check_diagonal_right(&body, line_length, "SAMX", &coord),
+            check_down(&body, "XMAS", &location),
+            check_right(&body, "XMAS", &location),
+            check_diagonal_left(&body, "XMAS", &location),
+            check_diagonal_right(&body, "XMAS", &location),
+            check_down(&body, "SAMX", &location),
+            check_right(&body, "SAMX", &location),
+            check_diagonal_left(&body, "SAMX", &location),
+            check_diagonal_right(&body, "SAMX", &location),
         ];
 
         let hits = hits.into_iter().filter(|hit| *hit).count();
@@ -227,33 +155,32 @@ fn part1(body: &str, line_length: usize) {
     println!("Part 1: {}", hit_count);
 }
 
-fn part2(body: &str, line_length: usize) {
+fn part2(body: &Grid<char>) {
     let mut hit_count = 0;
-    for (i, _) in body.char_indices() {
-        let start = index_to_coord(line_length, i);
-        let hit = check_diagonal_up_left(&body, line_length, "AS", &start)
-            && check_diagonal_up_right(&body, line_length, "AS", &start)
-            && check_diagonal_left(&body, line_length, "AM", &start)
-            && check_diagonal_right(&body, line_length, "AM", &start)
-            || check_diagonal_up_left(&body, line_length, "AM", &start)
-                && check_diagonal_up_right(&body, line_length, "AS", &start)
-                && check_diagonal_left(&body, line_length, "AM", &start)
-                && check_diagonal_right(&body, line_length, "AS", &start)
-            || check_diagonal_up_left(&body, line_length, "AM", &start)
-                && check_diagonal_up_right(&body, line_length, "AM", &start)
-                && check_diagonal_left(&body, line_length, "AS", &start)
-                && check_diagonal_right(&body, line_length, "AS", &start)
-            || check_diagonal_up_left(&body, line_length, "AS", &start)
-                && check_diagonal_up_right(&body, line_length, "AM", &start)
-                && check_diagonal_left(&body, line_length, "AS", &start)
-                && check_diagonal_right(&body, line_length, "AM", &start);
+    for location in body.iter_locations() {
+        let hit = check_diagonal_up_left(&body, "AS", &location)
+            && check_diagonal_up_right(&body, "AS", &location)
+            && check_diagonal_left(&body, "AM", &location)
+            && check_diagonal_right(&body, "AM", &location)
+            || check_diagonal_up_left(&body, "AM", &location)
+                && check_diagonal_up_right(&body, "AS", &location)
+                && check_diagonal_left(&body, "AM", &location)
+                && check_diagonal_right(&body, "AS", &location)
+            || check_diagonal_up_left(&body, "AM", &location)
+                && check_diagonal_up_right(&body, "AM", &location)
+                && check_diagonal_left(&body, "AS", &location)
+                && check_diagonal_right(&body, "AS", &location)
+            || check_diagonal_up_left(&body, "AS", &location)
+                && check_diagonal_up_right(&body, "AM", &location)
+                && check_diagonal_left(&body, "AS", &location)
+                && check_diagonal_right(&body, "AM", &location);
 
         if hit {
             hit_count += 1;
         }
     }
 
-    println!("Part 1: {}", hit_count);
+    println!("Part 2: {}", hit_count);
 }
 
 #[cfg(test)]
@@ -261,25 +188,29 @@ mod tests {
     use super::*;
     #[test]
     fn test_check_right() {
-        let body = "AAAAXMASAAAA";
-        assert!(check_right(body, 4, "XMAS", &Coord { x: 0, y: 1 }))
+        let grid = Grid::new("AAAAXMASAAAA".chars(), 4);
+        assert!(check_right(&grid, "XMAS", &Location { x: 0, y: 1 }))
     }
 
     #[test]
     fn test_check_down() {
-        let body = "AXAAMAAAAASA";
-        assert!(check_down(body, 3, "XMAS", &Coord { x: 1, y: 0 }))
+        let grid = Grid::new("AXAAMAAAAASA".chars(), 3);
+        assert!(check_down(&grid, "XMAS", &Location { x: 1, y: 0 }))
     }
 
     #[test]
     fn test_check_diagonal_left() {
-        let body = "ABCXDEMFGAHISJKL";
-        assert!(check_diagonal_left(body, 4, "XMAS", &Coord { x: 3, y: 0 }))
+        let grid = Grid::new("ABCXDEMFGAHISJKL".chars(), 4);
+        assert!(check_diagonal_left(&grid, "XMAS", &Location { x: 3, y: 0 }))
     }
 
     #[test]
     fn test_check_diagonal_right() {
-        let body = "XBCDEMGHIJALMNOS";
-        assert!(check_diagonal_right(body, 4, "XMAS", &Coord { x: 0, y: 0 }))
+        let grid = Grid::new("XBCDEMGHIJALMNOS".chars(), 4);
+        assert!(check_diagonal_right(
+            &grid,
+            "XMAS",
+            &Location { x: 0, y: 0 }
+        ))
     }
 }

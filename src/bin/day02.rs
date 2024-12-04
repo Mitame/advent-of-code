@@ -62,11 +62,7 @@ fn is_safe(levels: Levels) -> bool {
 }
 
 fn part1(report: Report) {
-    let safe_count = report
-        .into_iter()
-        .map(is_safe)
-        .filter(|v| *v)
-        .count();
+    let safe_count = report.into_iter().map(is_safe).filter(|v| *v).count();
 
     println!("Part 1: {}", safe_count);
 }
