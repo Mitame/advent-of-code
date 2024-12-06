@@ -1,10 +1,21 @@
-#[derive(Debug, Clone)]
+use std::fmt::Debug;
+
+#[derive(Clone)]
 pub struct Grid<T> {
     cells: Vec<T>,
     row_length: usize,
 }
 
-#[derive(Debug, Clone)]
+impl<T> Debug for Grid<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Grid")
+            .field("row_length", &self.row_length)
+            .field("height", &(self.cells.len() / self.row_length))
+            .finish()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Location {
     pub x: usize,
     pub y: usize,
@@ -67,6 +78,13 @@ impl<T> Grid<T> {
     pub fn get(&self, location: &Location) -> Option<&T> {
         self.get_index_from_location(location)
             .and_then(|i| self.cells.get(i))
+    }
+
+    pub fn set(&mut self, location: &Location, value: T) -> bool {
+        self.get_index_from_location(location)
+            .and_then(|i| self.cells.get_mut(i))
+            .and_then(|cell| Some(std::mem::replace(cell, value)))
+            .is_some()
     }
 
     pub fn iter_locations(&self) -> impl Iterator<Item = Location> + '_ {
