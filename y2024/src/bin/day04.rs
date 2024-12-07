@@ -1,6 +1,6 @@
 use std::io::{stdin, BufRead, BufReader};
 
-use advent_of_code::{Grid, Location};
+use grid::{Grid, Location};
 
 fn main() {
     let reader = BufReader::new(stdin());
