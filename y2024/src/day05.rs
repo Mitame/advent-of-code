@@ -1,15 +1,21 @@
 use std::{
     cmp::Ordering,
     collections::{HashMap, HashSet},
-    io::{stdin, BufRead, BufReader},
+    io::{BufRead, BufReader, Read},
 };
+use crate::Aoc;
 
 type Rules = HashMap<usize, HashSet<usize>>;
 
 type Pages = Vec<usize>;
 
-fn main() {
-    let reader = BufReader::new(stdin());
+struct Data {
+    rules: Rules,
+    updates: Vec<Pages>,
+}
+
+fn parse(buf: &mut dyn Read) -> Data {
+    let reader = BufReader::new(buf);
     let mut rules: Rules = HashMap::new();
     let mut updates: Vec<Pages> = Vec::new();
 
@@ -38,8 +44,10 @@ fn main() {
         }
     }
 
-    part1(&rules, &updates);
-    part2(&rules, &updates);
+    Data {
+        rules,
+        updates
+    }
 }
 
 fn is_valid(rules: &Rules, update: &[usize]) -> bool {
@@ -62,14 +70,16 @@ fn get_middle_page(update: &[usize]) -> usize {
     return update[update.len() / 2];
 }
 
-fn part1(rules: &Rules, updates: &[Pages]) {
+fn part1(buf: &mut dyn Read) {
+    let Data {rules, updates} = parse(buf);
     let result: usize = updates
-        .into_iter()
-        .filter(|update| is_valid(rules, update))
+        .iter()
+        .filter(|update| is_valid(&rules, update))
         .map(|update| get_middle_page(update))
         .sum();
     println!("Part 1: {}", result);
 }
+inventory::submit!(Aoc::new(5, 1, part1));
 
 fn reorder_pages(rules: &Rules, rules_rev: &Rules, update: &[usize]) -> Vec<usize> {
     let mut update = update.to_vec();
@@ -93,25 +103,27 @@ fn reorder_pages(rules: &Rules, rules_rev: &Rules, update: &[usize]) -> Vec<usiz
     update
 }
 
-fn part2(rules: &Rules, updates: &[Pages]) {
+fn part2(buf: &mut dyn Read) {
+    let Data {rules, updates} = parse(buf);
     let mut rules_rev: Rules = HashMap::new();
-    for (after, befores) in rules {
+    for (after, befores) in &rules {
         for before in befores {
             rules_rev.entry(*before).or_default().insert(*after);
         }
     }
     let bad_updates: Vec<&Pages> = updates
-        .into_iter()
-        .filter(|update| !is_valid(rules, update))
+        .iter()
+        .filter(|update| !is_valid(&rules, update))
         .collect();
     let result: usize = bad_updates
         .into_iter()
-        .map(|update| reorder_pages(rules, &rules_rev, update))
+        .map(|update| reorder_pages(&rules, &rules_rev, update))
         .map(|update| get_middle_page(&update))
         .sum();
 
     println!("Part 2: {}", result);
 }
+inventory::submit!(Aoc::new(5, 2, part2));
 
 #[cfg(test)]
 mod tests {
