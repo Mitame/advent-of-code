@@ -1,12 +1,12 @@
 use std::{
     collections::HashSet,
-    io::{stdin, BufRead, BufReader},
+    io::{Read, BufRead, BufReader},
 };
-
+use crate::Aoc;
 use grid::{Grid, Location};
 
-fn main() {
-    let reader = BufReader::new(stdin());
+fn parse(buf: &mut dyn Read) -> Grid<char> {
+    let reader = BufReader::new(buf);
     let mut lines = Vec::new();
     let mut line_length = 0;
     for line in reader.lines() {
@@ -14,10 +14,7 @@ fn main() {
         line_length = line.len();
         lines.push(line);
     }
-    let grid = Grid::new(lines.join("").chars(), line_length);
-
-    part1(&grid);
-    part2(&grid);
+    Grid::new(lines.join("").chars(), line_length)
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone)]
@@ -28,11 +25,13 @@ enum Direction {
     Left,
 }
 
-fn part1(grid: &Grid<char>) {
+fn part1(buf: &mut dyn Read) {
+    let grid = &parse(buf);
     let path = find_path(grid).unwrap();
     let set: HashSet<Location> = HashSet::from_iter(path.into_iter());
     println!("Part 1: {}", set.len());
 }
+inventory::submit!(Aoc::new(6, 1, part1));
 
 fn find_path(grid: &Grid<char>) -> Option<Vec<Location>> {
     let grid = grid.clone();
@@ -84,7 +83,9 @@ fn check_for_loop(grid: &Grid<char>) -> bool {
     find_path(grid).is_none()
 }
 
-fn part2(grid: &Grid<char>) {
+fn part2(buf: &mut dyn Read) {
+    let grid = &parse(buf);
+
     let mut valid_obstruction_locations = HashSet::new();
     let path: HashSet<Location> = HashSet::from_iter(find_path(grid).unwrap().into_iter());
     for obstruction_location in path {
@@ -110,3 +111,5 @@ fn part2(grid: &Grid<char>) {
 
     println!("Part 2: {}", valid_obstruction_locations.len())
 }
+
+inventory::submit!(Aoc::new(6, 2, part2));
