@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, ops::{Add, Mul, Sub}};
 
 #[derive(Clone)]
 pub struct Grid<T> {
@@ -19,6 +19,12 @@ impl<T> Debug for Grid<T> {
 pub struct Location {
     pub x: usize,
     pub y: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
+pub struct Offset {
+    pub x: isize,
+    pub y: isize,
 }
 
 impl Location {
@@ -59,6 +65,50 @@ impl Location {
     }
 }
 
+impl Sub<&Location> for &Location {
+    type Output = Offset;
+
+    fn sub(self, rhs: &Location) -> Self::Output {
+        Offset {
+            x: self.x as isize - rhs.x as isize,
+            y: self.y as isize - rhs.y as isize,
+        }
+    }
+}
+
+impl Add<&Offset> for &Location {
+    type Output = Location;
+
+    fn add(self, rhs: &Offset) -> Self::Output {
+        Location {
+            x: (self.x as isize + rhs.x) as usize,
+            y: (self.y as isize + rhs.y) as usize,
+        }
+    }
+}
+
+impl Mul<isize> for &Offset {
+    type Output = Offset;
+
+    fn mul(self, rhs: isize) -> Self::Output {
+        Offset {
+            x: self.x * rhs,
+            y: self.y * rhs,
+        }
+    }
+}
+
+impl Sub<&Offset> for &Location {
+    type Output = Location;
+
+    fn sub(self, rhs: &Offset) -> Self::Output {
+        Location {
+            x: (self.x as isize - rhs.x) as usize,
+            y: (self.y as isize - rhs.y) as usize,
+        }
+    }
+}
+
 impl<T> Grid<T> {
     pub fn new(cells: impl IntoIterator<Item = T>, row_length: usize) -> Grid<T> {
         Grid {
@@ -92,5 +142,10 @@ impl<T> Grid<T> {
             x: i % self.row_length,
             y: i / self.row_length,
         })
+    }
+
+    pub fn is_within_bounds(&self, location: &Location) -> bool {
+        let max_y = self.cells.len() / self.row_length;
+        location.y < max_y && location.x < self.row_length
     }
 }
