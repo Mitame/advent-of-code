@@ -1,5 +1,5 @@
-use std::io::{BufRead, BufReader, Read};
 use crate::Aoc;
+use std::io::{BufRead, BufReader, Read};
 
 #[derive(Debug, Clone)]
 struct Calibration {

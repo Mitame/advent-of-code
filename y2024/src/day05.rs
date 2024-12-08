@@ -1,9 +1,9 @@
+use crate::Aoc;
 use std::{
     cmp::Ordering,
     collections::{HashMap, HashSet},
     io::{BufRead, BufReader, Read},
 };
-use crate::Aoc;
 
 type Rules = HashMap<usize, HashSet<usize>>;
 
@@ -44,10 +44,7 @@ fn parse(buf: &mut dyn Read) -> Data {
         }
     }
 
-    Data {
-        rules,
-        updates
-    }
+    Data { rules, updates }
 }
 
 fn is_valid(rules: &Rules, update: &[usize]) -> bool {
@@ -71,7 +68,7 @@ fn get_middle_page(update: &[usize]) -> usize {
 }
 
 fn part1(buf: &mut dyn Read) {
-    let Data {rules, updates} = parse(buf);
+    let Data { rules, updates } = parse(buf);
     let result: usize = updates
         .iter()
         .filter(|update| is_valid(&rules, update))
@@ -104,7 +101,7 @@ fn reorder_pages(rules: &Rules, rules_rev: &Rules, update: &[usize]) -> Vec<usiz
 }
 
 fn part2(buf: &mut dyn Read) {
-    let Data {rules, updates} = parse(buf);
+    let Data { rules, updates } = parse(buf);
     let mut rules_rev: Rules = HashMap::new();
     for (after, befores) in &rules {
         for before in befores {

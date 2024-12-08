@@ -1,7 +1,4 @@
-use std::{
-    io::stdin,
-    path::PathBuf, process::exit,
-};
+use std::{io::stdin, path::PathBuf, process::exit};
 
 use advent_of_code::Aoc;
 use clap::Parser;
@@ -18,7 +15,7 @@ fn main() {
 
     for solution in inventory::iter::<Aoc> {
         if solution.day == args.day && args.part.map(|part| part == solution.part).unwrap_or(true) {
-            return (solution.solver)(&mut stdin())
+            return (solution.solver)(&mut stdin());
         }
     }
 

@@ -1,11 +1,11 @@
-use std::io::BufRead;
-use std::{collections::HashMap, io::BufReader};
 use crate::Aoc;
 use regex::Regex;
+use std::io::BufRead;
+use std::{collections::HashMap, io::BufReader};
 
 struct Data {
-    list_a: Vec::<u32>,
-    list_b: Vec::<u32>,
+    list_a: Vec<u32>,
+    list_b: Vec<u32>,
 }
 
 fn parse(buf: &mut dyn std::io::Read) -> Data {
@@ -18,19 +18,24 @@ fn parse(buf: &mut dyn std::io::Read) -> Data {
         if line == "" {
             break;
         }
-        let [a, b] = separator_re.split(&line).map(|v| v.parse::<u32>().unwrap()).collect::<Vec<_>>().try_into().unwrap();
+        let [a, b] = separator_re
+            .split(&line)
+            .map(|v| v.parse::<u32>().unwrap())
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap();
         list_a.push(a);
         list_b.push(b);
     }
 
-    Data {
-        list_a,
-        list_b
-    }
+    Data { list_a, list_b }
 }
 
 fn part1(buf: &mut dyn std::io::Read) {
-    let Data {mut list_a, mut list_b} = parse(buf);
+    let Data {
+        mut list_a,
+        mut list_b,
+    } = parse(buf);
     list_a.sort();
     list_b.sort();
 
@@ -54,7 +59,7 @@ fn count(list: Vec<u32>) -> HashMap<u32, u32> {
 }
 
 fn part2(buf: &mut dyn std::io::Read) {
-    let Data {list_a, list_b} = parse(buf);
+    let Data { list_a, list_b } = parse(buf);
 
     let count_a = count(list_a);
     let count_b = count(list_b);
@@ -66,7 +71,6 @@ fn part2(buf: &mut dyn std::io::Read) {
     println!("Part 2: {}", score);
 }
 inventory::submit!(Aoc::new(1, 2, part2));
-
 
 // fn main() {
 //     part1(list_a.clone(), list_b.clone());

@@ -1,9 +1,9 @@
-use std::{
-    collections::HashSet,
-    io::{Read, BufRead, BufReader},
-};
 use crate::Aoc;
 use grid::{Grid, Location};
+use std::{
+    collections::HashSet,
+    io::{BufRead, BufReader, Read},
+};
 
 fn parse(buf: &mut dyn Read) -> Grid<char> {
     let reader = BufReader::new(buf);

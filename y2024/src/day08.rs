@@ -134,17 +134,15 @@ mod tests {
     fn test_find_antinodes() {
         assert_eq!(
             find_antinodes(&Location { x: 0, y: 0 }, &Location { x: 3, y: 3 }),
-            vec![
-                Location { x: 6, y: 6 },
-            ],
+            vec![Location { x: 6, y: 6 },],
         );
         assert_eq!(
             find_antinodes(&Location { x: 1, y: 1 }, &Location { x: 2, y: 2 }),
-            vec![ Location { x: 0, y: 0 }, Location { x: 3, y: 3 },],
+            vec![Location { x: 0, y: 0 }, Location { x: 3, y: 3 },],
         );
         assert_eq!(
             find_antinodes(&Location { x: 2, y: 2 }, &Location { x: 1, y: 1 }),
-            vec![Location { x: 3, y: 3 },Location { x: 0, y: 0 },],
+            vec![Location { x: 3, y: 3 }, Location { x: 0, y: 0 },],
         );
         assert_eq!(
             find_antinodes(&Location { x: 1, y: 1 }, &Location { x: 2, y: 1 }),
