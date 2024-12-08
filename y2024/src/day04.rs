@@ -1,9 +1,10 @@
-use std::io::{stdin, BufRead, BufReader};
+use crate::Aoc;
+use std::io::{BufRead, BufReader, Read};
 
 use grid::{Grid, Location};
 
-fn main() {
-    let reader = BufReader::new(stdin());
+fn parse(buf: &mut dyn Read) -> Grid<char> {
+    let reader = BufReader::new(buf);
     let mut lines = Vec::new();
     let mut line_length = 0;
     for line in reader.lines() {
@@ -11,10 +12,7 @@ fn main() {
         line_length = line.len();
         lines.push(line);
     }
-    let grid = Grid::new(lines.join("").chars(), line_length);
-
-    part1(&grid);
-    part2(&grid);
+    Grid::new(lines.join("").chars(), line_length)
 }
 
 fn check_down(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
@@ -134,7 +132,8 @@ fn check_diagonal_up_left(grid: &Grid<char>, search_text: &str, start: &Location
     }
 }
 
-fn part1(body: &Grid<char>) {
+fn part1(buf: &mut dyn Read) {
+    let body = parse(buf);
     let mut hit_count = 0;
     for location in body.iter_locations() {
         let hits = [
@@ -154,8 +153,10 @@ fn part1(body: &Grid<char>) {
 
     println!("Part 1: {}", hit_count);
 }
+inventory::submit!(Aoc::new(4, 1, part1));
 
-fn part2(body: &Grid<char>) {
+fn part2(buf: &mut dyn Read) {
+    let body = parse(buf);
     let mut hit_count = 0;
     for location in body.iter_locations() {
         let hit = check_diagonal_up_left(&body, "AS", &location)
@@ -182,6 +183,7 @@ fn part2(body: &Grid<char>) {
 
     println!("Part 2: {}", hit_count);
 }
+inventory::submit!(Aoc::new(4, 2, part2));
 
 #[cfg(test)]
 mod tests {
