@@ -1,4 +1,5 @@
-use std::io::{stdin, BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
+use crate::Aoc;
 
 #[derive(Debug, Clone)]
 struct Calibration {
@@ -6,8 +7,8 @@ struct Calibration {
     numbers: Vec<usize>,
 }
 
-fn main() {
-    let reader = BufReader::new(stdin());
+fn parse(buf: &mut dyn Read) -> Vec<Calibration> {
+    let reader = BufReader::new(buf);
     let mut calibrations = Vec::new();
 
     for line in reader.lines() {
@@ -22,8 +23,7 @@ fn main() {
         calibrations.push(Calibration { target, numbers });
     }
 
-    part1(&calibrations);
-    part2(&calibrations);
+    calibrations
 }
 
 fn is_solvable(target: usize, numbers: &[usize], allow_concat: bool) -> bool {
@@ -64,7 +64,8 @@ fn is_solvable(target: usize, numbers: &[usize], allow_concat: bool) -> bool {
     return false;
 }
 
-fn part1(calibrations: &[Calibration]) {
+fn part1(buf: &mut dyn Read) {
+    let calibrations = parse(buf);
     let result: usize = calibrations
         .iter()
         .filter_map(|cal| is_solvable(cal.target, &cal.numbers, false).then_some(cal.target))
@@ -72,8 +73,10 @@ fn part1(calibrations: &[Calibration]) {
 
     println!("Part 1: {}", result);
 }
+inventory::submit!(Aoc::new(7, 1, part1));
 
-fn part2(calibrations: &[Calibration]) {
+fn part2(buf: &mut dyn Read) {
+    let calibrations = parse(buf);
     let result: usize = calibrations
         .iter()
         .filter_map(|cal| is_solvable(cal.target, &cal.numbers, true).then_some(cal.target))
@@ -81,6 +84,7 @@ fn part2(calibrations: &[Calibration]) {
 
     println!("Part 2: {}", result);
 }
+inventory::submit!(Aoc::new(7, 2, part2));
 
 #[cfg(test)]
 mod tests {
