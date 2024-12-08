@@ -1,4 +1,7 @@
-use std::{fmt::Debug, ops::{Add, Mul, Sub}};
+use std::{
+    fmt::Debug,
+    ops::{Add, Mul, Sub},
+};
 
 #[derive(Clone)]
 pub struct Grid<T> {

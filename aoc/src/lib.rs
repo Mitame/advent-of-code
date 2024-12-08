@@ -12,7 +12,12 @@ pub struct Aoc {
 
 impl Aoc {
     const fn new(year: usize, day: usize, part: usize, solver: Solver) -> Aoc {
-        Aoc { year, day, part, solver }
+        Aoc {
+            year,
+            day,
+            part,
+            solver,
+        }
     }
 }
 
