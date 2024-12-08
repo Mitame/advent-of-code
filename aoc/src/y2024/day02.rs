@@ -69,7 +69,7 @@ fn part1(buf: &mut dyn Read) {
     println!("Part 1: {}", safe_count);
 }
 
-inventory::submit!(Aoc::new(2, 1, part1));
+inventory::submit!(Aoc::new(2024, 2, 1, part1));
 
 fn is_safeish(levels: Levels) -> bool {
     for skip_index in 0..levels.len() {
@@ -97,7 +97,7 @@ fn part2(buf: &mut dyn Read) {
 
     println!("Part 2: {}", safeish_count);
 }
-inventory::submit!(Aoc::new(2, 2, part2));
+inventory::submit!(Aoc::new(2024, 2, 2, part2));
 
 #[cfg(test)]
 mod tests {

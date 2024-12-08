@@ -73,7 +73,7 @@ fn part1(buf: &mut dyn Read) {
 
     println!("Part 1: {}", result);
 }
-inventory::submit!(Aoc::new(7, 1, part1));
+inventory::submit!(Aoc::new(2024, 7, 1, part1));
 
 fn part2(buf: &mut dyn Read) {
     let calibrations = parse(buf);
@@ -84,7 +84,7 @@ fn part2(buf: &mut dyn Read) {
 
     println!("Part 2: {}", result);
 }
-inventory::submit!(Aoc::new(7, 2, part2));
+inventory::submit!(Aoc::new(2024, 7, 2, part2));
 
 #[cfg(test)]
 mod tests {

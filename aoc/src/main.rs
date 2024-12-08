@@ -5,8 +5,9 @@ use clap::Parser;
 
 #[derive(Debug, Parser)]
 struct Args {
+    year: usize,
     day: usize,
-    part: Option<usize>,
+    part: usize,
     input: Option<PathBuf>,
 }
 
@@ -14,7 +15,7 @@ fn main() {
     let args = Args::parse();
 
     for solution in inventory::iter::<Aoc> {
-        if solution.day == args.day && args.part.map(|part| part == solution.part).unwrap_or(true) {
+        if solution.year == args.year && solution.day == args.day && args.part == solution.part {
             return (solution.solver)(&mut stdin());
         }
     }

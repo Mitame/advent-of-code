@@ -46,7 +46,7 @@ fn part1(buf: &mut dyn std::io::Read) {
         .sum();
     println!("Part 1: {}", result);
 }
-inventory::submit!(Aoc::new(1, 1, part1));
+inventory::submit!(Aoc::new(2024, 1, 1, part1));
 
 fn count(list: Vec<u32>) -> HashMap<u32, u32> {
     let mut counter = HashMap::new();
@@ -70,7 +70,7 @@ fn part2(buf: &mut dyn std::io::Read) {
         .sum();
     println!("Part 2: {}", score);
 }
-inventory::submit!(Aoc::new(1, 2, part2));
+inventory::submit!(Aoc::new(2024, 1, 2, part2));
 
 // fn main() {
 //     part1(list_a.clone(), list_b.clone());

@@ -34,7 +34,7 @@ fn part1(buf: &mut dyn Read) {
 
     println!("Part 1: {}", result);
 }
-inventory::submit!(Aoc::new(3, 1, part1));
+inventory::submit!(Aoc::new(2024, 3, 1, part1));
 
 fn part2(buf: &mut dyn Read) {
     let buffer = parse(buf);
@@ -75,4 +75,4 @@ fn part2(buf: &mut dyn Read) {
 
     println!("Part 2: {}", result);
 }
-inventory::submit!(Aoc::new(3, 2, part2));
+inventory::submit!(Aoc::new(2024, 3, 2, part2));

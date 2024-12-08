@@ -76,7 +76,7 @@ fn part1(buf: &mut dyn Read) {
         .sum();
     println!("Part 1: {}", result);
 }
-inventory::submit!(Aoc::new(5, 1, part1));
+inventory::submit!(Aoc::new(2024, 5, 1, part1));
 
 fn reorder_pages(rules: &Rules, rules_rev: &Rules, update: &[usize]) -> Vec<usize> {
     let mut update = update.to_vec();
@@ -120,7 +120,7 @@ fn part2(buf: &mut dyn Read) {
 
     println!("Part 2: {}", result);
 }
-inventory::submit!(Aoc::new(5, 2, part2));
+inventory::submit!(Aoc::new(2024, 5, 2, part2));
 
 #[cfg(test)]
 mod tests {
