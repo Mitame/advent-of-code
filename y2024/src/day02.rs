@@ -1,10 +1,11 @@
-use std::io::{stdin, BufRead, BufReader};
+use crate::Aoc;
+use std::io::{BufRead, BufReader, Read};
 
 type Levels = Vec<u8>;
 type Report = Vec<Levels>;
 
-fn main() {
-    let reader = BufReader::new(stdin());
+fn parse(buf: &mut dyn Read) -> Report {
+    let reader = BufReader::new(buf);
 
     let mut report: Report = Vec::new();
 
@@ -14,8 +15,7 @@ fn main() {
         report.push(line.split(' ').map(|v| v.parse().unwrap()).collect())
     }
 
-    part1(report.clone());
-    part2(report.clone());
+    report
 }
 
 fn is_safe(levels: Levels) -> bool {
@@ -61,11 +61,15 @@ fn is_safe(levels: Levels) -> bool {
     true
 }
 
-fn part1(report: Report) {
+fn part1(buf: &mut dyn Read) {
+    let report: Vec<Vec<u8>> = parse(buf);
+
     let safe_count = report.into_iter().map(is_safe).filter(|v| *v).count();
 
     println!("Part 1: {}", safe_count);
 }
+
+inventory::submit!(Aoc::new(2, 1, part1));
 
 fn is_safeish(levels: Levels) -> bool {
     for skip_index in 0..levels.len() {
@@ -83,7 +87,8 @@ fn is_safeish(levels: Levels) -> bool {
     false
 }
 
-fn part2(report: Report) {
+fn part2(buf: &mut dyn Read) {
+    let report: Vec<Vec<u8>> = parse(buf);
     let safeish_count = report
         .into_iter()
         .map(|levels| is_safeish(levels.clone()))
@@ -92,6 +97,7 @@ fn part2(report: Report) {
 
     println!("Part 2: {}", safeish_count);
 }
+inventory::submit!(Aoc::new(2, 2, part2));
 
 #[cfg(test)]
 mod tests {
