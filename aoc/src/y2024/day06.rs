@@ -31,7 +31,6 @@ fn part1(buf: &mut dyn Read) {
     let set: HashSet<Location> = HashSet::from_iter(path.into_iter());
     println!("Part 1: {}", set.len());
 }
-inventory::submit!(Aoc::new(2024, 6, 1, part1));
 
 fn find_path(grid: &Grid<char>) -> Option<Vec<Location>> {
     let grid = grid.clone();
@@ -112,4 +111,10 @@ fn part2(buf: &mut dyn Read) {
     println!("Part 2: {}", valid_obstruction_locations.len())
 }
 
-inventory::submit!(Aoc::new(2024, 6, 2, part2));
+inventory::submit!(Aoc::new(
+    2024,
+    6,
+    part1,
+    part2,
+    include_bytes!("./inputs/day06")
+));

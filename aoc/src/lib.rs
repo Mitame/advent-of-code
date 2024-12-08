@@ -6,17 +6,25 @@ type Solver = fn(&mut dyn io::Read);
 pub struct Aoc {
     pub year: usize,
     pub day: usize,
-    pub part: usize,
-    pub solver: Solver,
+    pub part1: Solver,
+    pub part2: Solver,
+    pub input: &'static [u8],
 }
 
 impl Aoc {
-    const fn new(year: usize, day: usize, part: usize, solver: Solver) -> Aoc {
+    const fn new(
+        year: usize,
+        day: usize,
+        part1: Solver,
+        part2: Solver,
+        input: &'static [u8],
+    ) -> Aoc {
         Aoc {
             year,
             day,
-            part,
-            solver,
+            part1,
+            part2,
+            input,
         }
     }
 }

@@ -107,8 +107,6 @@ fn part1(buf: &mut dyn Read) {
     println!("Part 1: {}", antinode_locations.len());
 }
 
-inventory::submit!(Aoc::new(2024, 8, 1, part1));
-
 fn part2(buf: &mut dyn Read) {
     let grid = parse(buf);
     let antennae_locations = find_antennae_locations(&grid);
@@ -124,7 +122,13 @@ fn part2(buf: &mut dyn Read) {
     println!("Part 2: {}", antinode_locations.len());
 }
 
-inventory::submit!(Aoc::new(2024, 8, 2, part2));
+inventory::submit!(Aoc::new(
+    2024,
+    8,
+    part1,
+    part2,
+    include_bytes!("./inputs/day08")
+));
 
 #[cfg(test)]
 mod tests {

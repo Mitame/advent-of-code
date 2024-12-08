@@ -153,7 +153,6 @@ fn part1(buf: &mut dyn Read) {
 
     println!("Part 1: {}", hit_count);
 }
-inventory::submit!(Aoc::new(2024, 4, 1, part1));
 
 fn part2(buf: &mut dyn Read) {
     let body = parse(buf);
@@ -183,7 +182,13 @@ fn part2(buf: &mut dyn Read) {
 
     println!("Part 2: {}", hit_count);
 }
-inventory::submit!(Aoc::new(2024, 4, 2, part2));
+inventory::submit!(Aoc::new(
+    2024,
+    4,
+    part1,
+    part2,
+    include_bytes!("./inputs/day04")
+));
 
 #[cfg(test)]
 mod tests {
