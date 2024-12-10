@@ -1,4 +1,5 @@
 #![feature(iterator_try_collect)]
+#![feature(iter_intersperse)]
 use std::io;
 
 type Solver = fn(&mut dyn io::Read);
