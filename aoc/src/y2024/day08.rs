@@ -97,10 +97,8 @@ fn part1(buf: &mut dyn Read) {
     let antennae_locations = find_antennae_locations(&grid);
     let antinode_locations: HashSet<Location> = antennae_locations
         .values()
-        .map(|locations| find_pairs(locations.iter().cloned()))
-        .flatten()
-        .map(|(a, b)| find_antinodes(&a, &b))
-        .flatten()
+        .flat_map(|locations| find_pairs(locations.iter().cloned()))
+        .flat_map(|(a, b)| find_antinodes(&a, &b))
         .filter(|location| grid.is_within_bounds(location))
         .collect();
 
@@ -112,10 +110,8 @@ fn part2(buf: &mut dyn Read) {
     let antennae_locations = find_antennae_locations(&grid);
     let antinode_locations: HashSet<Location> = antennae_locations
         .values()
-        .map(|locations| find_pairs(locations.iter().cloned()))
-        .flatten()
-        .map(|(a, b)| find_lax_antinodes(&a, &b))
-        .flatten()
+        .flat_map(|locations| find_pairs(locations.iter().cloned()))
+        .flat_map(|(a, b)| find_lax_antinodes(&a, &b))
         .filter(|location| grid.is_within_bounds(location))
         .collect();
 

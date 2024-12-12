@@ -31,8 +31,7 @@ fn find_plots(garden: &Grid<char>) -> Vec<Vec<Location>> {
 
         let mut plot: Vec<Location> = Vec::new();
         let mut locations_to_check = vec![location];
-        while !locations_to_check.is_empty() {
-            let location = locations_to_check.pop().unwrap();
+        while let Some(location) = locations_to_check.pop() {
             if checked_locations.contains(&location) {
                 continue;
             }
@@ -127,12 +126,9 @@ fn count_corners(cell: Location, grid: &Grid<char>) -> usize {
         (right == centre, down_right == centre, down == centre),
     ];
     for rot in rotations {
-        if rot == (true, false, true) {
-            corner_count += 1;
-        } else if rot == (false, false, false) {
-            corner_count += 1;
-        } else if rot == (false, true, false) {
-            corner_count += 1;
+        match rot {
+            (true, false, true) | (false, _, false) => corner_count += 1,
+            _ => {}
         }
     }
 
@@ -146,7 +142,7 @@ fn find_corners(plot: Vec<Location>, grid: &Grid<char>) -> usize {
 }
 
 fn find_area(plot: Vec<Location>) -> usize {
-    return plot.len();
+    plot.len()
 }
 
 fn part1(buf: &mut dyn Read) {

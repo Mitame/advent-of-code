@@ -28,7 +28,7 @@ enum Direction {
 fn part1(buf: &mut dyn Read) {
     let grid = &parse(buf);
     let path = find_path(grid).unwrap();
-    let set: HashSet<Location> = HashSet::from_iter(path.into_iter());
+    let set: HashSet<Location> = HashSet::from_iter(path);
     println!("Part 1: {}", set.len());
 }
 
@@ -86,7 +86,7 @@ fn part2(buf: &mut dyn Read) {
     let grid = &parse(buf);
 
     let mut valid_obstruction_locations = HashSet::new();
-    let path: HashSet<Location> = HashSet::from_iter(find_path(grid).unwrap().into_iter());
+    let path: HashSet<Location> = HashSet::from_iter(find_path(grid).unwrap());
     for obstruction_location in path {
         // eprintln!("Checking {:?}", obstruction_location);
         let mut grid = grid.clone();

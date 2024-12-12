@@ -39,7 +39,7 @@ fn next_value(value: char) -> char {
     }
 }
 
-fn find_reachable_peaks<'g>(grid: &'g Grid<char>, location: &Location) -> Vec<Location> {
+fn find_reachable_peaks(grid: &Grid<char>, location: &Location) -> Vec<Location> {
     let Some(value) = grid.get(location) else {
         return [].into();
     };
@@ -64,8 +64,7 @@ fn find_reachable_peaks<'g>(grid: &'g Grid<char>, location: &Location) -> Vec<Lo
     });
 
     next_locations
-        .map(|location| find_reachable_peaks(grid, &location))
-        .flatten()
+        .flat_map(|location| find_reachable_peaks(grid, &location))
         .collect()
 }
 

@@ -75,7 +75,7 @@ fn get_block_ids(files: Vec<File>, mut gaps: Vec<Gap>) -> impl Iterator<Item = u
             }
             end_file.length -= 1;
             end_file.id
-        } else if files.len() != 0 {
+        } else if !files.is_empty() {
             file = files.pop_front().unwrap();
             gap = gaps.pop().unwrap();
             file.length -= 1;
@@ -101,7 +101,7 @@ fn part1(buf: &mut dyn Read) {
 fn get_block_ids_defrag(files: Vec<File>, gaps: Vec<Gap>) -> Vec<FileGap> {
     let mut file_gaps: Vec<_> = files
         .into_iter()
-        .zip(gaps.into_iter().chain([Gap { length: 0 }].into_iter()))
+        .zip(gaps.into_iter().chain([Gap { length: 0 }]))
         .map(|(file, gap)| FileGap {
             id: file.id,
             length: file.length as u32,

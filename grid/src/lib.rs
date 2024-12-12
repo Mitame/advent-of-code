@@ -136,12 +136,12 @@ impl<T> Grid<T> {
     pub fn set(&mut self, location: &Location, value: T) -> bool {
         self.get_index_from_location(location)
             .and_then(|i| self.cells.get_mut(i))
-            .and_then(|cell| Some(std::mem::replace(cell, value)))
+            .map(|cell| std::mem::replace(cell, value))
             .is_some()
     }
 
     pub fn iter_locations(&self) -> impl Iterator<Item = Location> + '_ {
-        (0..self.cells.len()).into_iter().map(|i| Location {
+        (0..self.cells.len()).map(|i| Location {
             x: i % self.row_length,
             y: i / self.row_length,
         })

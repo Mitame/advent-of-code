@@ -21,18 +21,18 @@ fn parse_games(buf: &mut dyn Read) -> Vec<Game> {
         .lines()
         .flatten()
         .map(|line| {
-            let (game_name, picks) = line.split_once(":").unwrap();
-            let id = game_name.split_once(" ").unwrap().1.parse().unwrap();
+            let (game_name, picks) = line.split_once(':').unwrap();
+            let id = game_name.split_once(' ').unwrap().1.parse().unwrap();
             let picks = picks
-                .split(";")
+                .split(';')
                 .map(|pick| {
-                    let balls = pick.split(",");
+                    let balls = pick.split(',');
                     let mut red = 0;
                     let mut green = 0;
                     let mut blue = 0;
 
                     for ball in balls {
-                        let (count, colour) = ball.trim().split_once(" ").unwrap();
+                        let (count, colour) = ball.trim().split_once(' ').unwrap();
                         let count: usize = count.parse().unwrap();
                         match colour {
                             "red" => red = count,

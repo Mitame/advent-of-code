@@ -13,11 +13,11 @@ fn parse(buf: &mut dyn Read) -> Vec<Calibration> {
 
     for line in reader.lines() {
         let line = line.unwrap();
-        let (target, numbers) = line.split_once(":").unwrap();
+        let (target, numbers) = line.split_once(':').unwrap();
         let target: usize = target.parse().unwrap();
         let numbers: Vec<usize> = numbers
             .trim()
-            .split(" ")
+            .split(' ')
             .map(|n| (n.trim()).parse().unwrap())
             .collect();
         calibrations.push(Calibration { target, numbers });
@@ -27,7 +27,7 @@ fn parse(buf: &mut dyn Read) -> Vec<Calibration> {
 }
 
 fn is_solvable(target: usize, numbers: &[usize], allow_concat: bool) -> bool {
-    if numbers.len() == 0 {
+    if numbers.is_empty() {
         return target == 0;
     }
 
@@ -61,7 +61,7 @@ fn is_solvable(target: usize, numbers: &[usize], allow_concat: bool) -> bool {
         }
     }
 
-    return false;
+    false
 }
 
 fn part1(buf: &mut dyn Read) {
@@ -96,27 +96,27 @@ mod tests {
 
     #[test]
     fn test_is_solvable() {
-        assert!(is_solvable(190, &vec![10, 19], false));
-        assert!(is_solvable(3267, &vec![81, 40, 27], false));
-        assert!(!is_solvable(83, &vec![17, 5], false));
-        assert!(!is_solvable(156, &vec![15, 6], false));
-        assert!(!is_solvable(7290, &vec![6, 8, 6, 15], false));
-        assert!(!is_solvable(161011, &vec![16, 10, 13], false));
-        assert!(!is_solvable(192, &vec![17, 8, 14], false));
-        assert!(!is_solvable(21037, &vec![9, 7, 18, 13], false));
-        assert!(is_solvable(292, &vec![11, 6, 16, 20], false));
+        assert!(is_solvable(190, &[10, 19], false));
+        assert!(is_solvable(3267, &[81, 40, 27], false));
+        assert!(!is_solvable(83, &[17, 5], false));
+        assert!(!is_solvable(156, &[15, 6], false));
+        assert!(!is_solvable(7290, &[6, 8, 6, 15], false));
+        assert!(!is_solvable(161011, &[16, 10, 13], false));
+        assert!(!is_solvable(192, &[17, 8, 14], false));
+        assert!(!is_solvable(21037, &[9, 7, 18, 13], false));
+        assert!(is_solvable(292, &[11, 6, 16, 20], false));
     }
 
     #[test]
     fn test_is_solvable_with_concat() {
-        assert!(is_solvable(190, &vec![10, 19], true));
-        assert!(is_solvable(3267, &vec![81, 40, 27], true));
-        assert!(!is_solvable(83, &vec![17, 5], true));
-        assert!(is_solvable(156, &vec![15, 6], true));
-        assert!(is_solvable(7290, &vec![6, 8, 6, 15], true));
-        assert!(!is_solvable(161011, &vec![16, 10, 13], true));
-        assert!(is_solvable(192, &vec![17, 8, 14], true));
-        assert!(!is_solvable(21037, &vec![9, 7, 18, 13], true));
-        assert!(is_solvable(292, &vec![11, 6, 16, 20], true));
+        assert!(is_solvable(190, &[10, 19], true));
+        assert!(is_solvable(3267, &[81, 40, 27], true));
+        assert!(!is_solvable(83, &[17, 5], true));
+        assert!(is_solvable(156, &[15, 6], true));
+        assert!(is_solvable(7290, &[6, 8, 6, 15], true));
+        assert!(!is_solvable(161011, &[16, 10, 13], true));
+        assert!(is_solvable(192, &[17, 8, 14], true));
+        assert!(!is_solvable(21037, &[9, 7, 18, 13], true));
+        assert!(is_solvable(292, &[11, 6, 16, 20], true));
     }
 }

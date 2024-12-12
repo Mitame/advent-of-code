@@ -27,7 +27,7 @@ fn check_down(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
         .collect();
     match target_str {
         None => false,
-        Some(target) => &target == search_text,
+        Some(target) => target == search_text,
     }
 }
 
@@ -44,7 +44,7 @@ fn check_right(grid: &Grid<char>, search_text: &str, start: &Location) -> bool {
         .collect();
     match target_str {
         None => false,
-        Some(target) => &target == search_text,
+        Some(target) => target == search_text,
     }
 }
 
@@ -65,7 +65,7 @@ fn check_diagonal_left(grid: &Grid<char>, search_text: &str, start: &Location) -
         .collect();
     match target_str {
         None => false,
-        Some(target) => &target == search_text,
+        Some(target) => target == search_text,
     }
 }
 
@@ -82,7 +82,7 @@ fn check_diagonal_right(grid: &Grid<char>, search_text: &str, start: &Location) 
         .collect();
     match target_str {
         None => false,
-        Some(target) => &target == search_text,
+        Some(target) => target == search_text,
     }
 }
 
@@ -103,7 +103,7 @@ fn check_diagonal_up_right(grid: &Grid<char>, search_text: &str, start: &Locatio
         .collect();
     match target_str {
         None => false,
-        Some(target) => &target == search_text,
+        Some(target) => target == search_text,
     }
 }
 
@@ -128,7 +128,7 @@ fn check_diagonal_up_left(grid: &Grid<char>, search_text: &str, start: &Location
         .collect();
     match target_str {
         None => false,
-        Some(target) => &target == search_text,
+        Some(target) => target == search_text,
     }
 }
 

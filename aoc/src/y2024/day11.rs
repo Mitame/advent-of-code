@@ -9,12 +9,12 @@ fn parse(buf: &mut dyn Read) -> Vec<usize> {
     let mut reader = BufReader::new(buf);
     let mut line: String = String::new();
     reader.read_line(&mut line).unwrap();
-    line.split(" ").map(|v| v.trim().parse().unwrap()).collect()
+    line.split(' ').map(|v| v.trim().parse().unwrap()).collect()
 }
 
 fn blink(number: usize) -> Vec<usize> {
     if number == 0 {
-        return vec![1];
+        vec![1]
     } else {
         let digits = number.to_string();
         if digits.len() % 2 == 0 {
@@ -33,11 +33,11 @@ fn blink_n(mut numbers: Vec<usize>, n: usize) -> Vec<usize> {
     for i in 0..n {
         eprintln!("Step {}", i);
 
-        let new_numbers: Vec<_> = numbers.into_iter().map(blink).flatten().collect();
+        let new_numbers: Vec<_> = numbers.into_iter().flat_map(blink).collect();
         numbers = new_numbers;
     }
 
-    return numbers;
+    numbers
 }
 
 fn part1(buf: &mut dyn Read) {
@@ -67,12 +67,10 @@ where
     T: std::hash::Hash + Eq + Clone,
 {
     let mut counter = Counter::<T>::new();
-    a.into_iter()
-        .chain(b.into_iter())
-        .fold(&mut counter, |acc, (k, v)| {
-            *acc.entry(k).or_default() += v;
-            acc
-        });
+    a.into_iter().chain(b).fold(&mut counter, |acc, (k, v)| {
+        *acc.entry(k).or_default() += v;
+        acc
+    });
     counter
 }
 
@@ -93,7 +91,7 @@ fn blink_counter_n(numbers: Vec<usize>, n: usize) -> Counter<usize> {
                     });
                 counter
             })
-            .reduce(|a, b| sum_counters(a, b))
+            .reduce(sum_counters)
             .unwrap();
         counter = new_counter;
     }

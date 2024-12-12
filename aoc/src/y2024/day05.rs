@@ -22,14 +22,14 @@ fn parse(buf: &mut dyn Read) -> Data {
     let mut is_pages = false;
     for line in reader.lines() {
         let line = line.unwrap();
-        if line == "" {
+        if line.is_empty() {
             is_pages = true;
             continue;
         }
 
         if !is_pages {
             let numbers: Vec<usize> = line
-                .split("|")
+                .split('|')
                 .map(|v| v.parse::<usize>().unwrap())
                 .collect();
             let before = numbers[0];
@@ -37,7 +37,7 @@ fn parse(buf: &mut dyn Read) -> Data {
             rules.entry(after).or_default().insert(before);
         } else {
             let numbers = line
-                .split(",")
+                .split(',')
                 .map(|v| v.parse::<usize>().unwrap())
                 .collect();
             updates.push(numbers);
@@ -60,11 +60,11 @@ fn is_valid(rules: &Rules, update: &[usize]) -> bool {
         seen_pages.insert(*page);
     }
 
-    return true;
+    true
 }
 
 fn get_middle_page(update: &[usize]) -> usize {
-    return update[update.len() / 2];
+    update[update.len() / 2]
 }
 
 fn part1(buf: &mut dyn Read) {

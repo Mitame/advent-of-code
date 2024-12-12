@@ -10,7 +10,7 @@ fn part1(buf: &mut dyn Read) {
         .lines()
         .flatten()
         .map(|line| {
-            let first_digit = line.chars().filter(|c| c.is_numeric()).next().unwrap();
+            let first_digit = line.chars().find(|c| c.is_numeric()).unwrap();
             let last_digit = line.chars().filter(|c| c.is_numeric()).last().unwrap();
             format!("{}{}", first_digit, last_digit)
                 .parse::<u32>()
@@ -21,7 +21,7 @@ fn part1(buf: &mut dyn Read) {
     println!("Part 1: {}", result);
 }
 
-fn convert_text<'a>(text: &'a str) -> &'a str {
+fn convert_text(text: &str) -> &str {
     match text {
         "one" => "1",
         "two" => "2",
