@@ -14,7 +14,8 @@ fn parse(buf: &mut dyn std::io::Read) -> Data {
 
     let reader = BufReader::new(buf);
     let separator_re = Regex::new(" +").unwrap();
-    for line in reader.lines().flatten() {
+    for line in reader.lines() {
+        let line = line.unwrap();
         if line.is_empty() {
             break;
         }

@@ -19,8 +19,8 @@ fn parse_games(buf: &mut dyn Read) -> Vec<Game> {
     let reader = BufReader::new(buf);
     reader
         .lines()
-        .flatten()
-        .map(|line| {
+        .map_while(|line| {
+            let Ok(line) = line else { return None; };
             let (game_name, picks) = line.split_once(':').unwrap();
             let id = game_name.split_once(' ').unwrap().1.parse().unwrap();
             let picks = picks
@@ -48,7 +48,7 @@ fn parse_games(buf: &mut dyn Read) -> Vec<Game> {
                 .collect();
 
             dbg!(line);
-            dbg!(Game { id, picks })
+            dbg!(Some(Game { id, picks }))
         })
         .collect()
 }

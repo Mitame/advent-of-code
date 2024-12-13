@@ -8,13 +8,13 @@ fn part1(buf: &mut dyn Read) {
     let reader = BufReader::new(buf);
     let result: u32 = reader
         .lines()
-        .flatten()
-        .map(|line| {
+        .map_while(|line| {
+            let Ok(line) = line else { return None; };
             let first_digit = line.chars().find(|c| c.is_numeric()).unwrap();
             let last_digit = line.chars().filter(|c| c.is_numeric()).last().unwrap();
-            format!("{}{}", first_digit, last_digit)
+            Some(format!("{}{}", first_digit, last_digit)
                 .parse::<u32>()
-                .unwrap()
+                .unwrap())
         })
         .sum();
 
@@ -44,16 +44,17 @@ fn part2(buf: &mut dyn Read) {
     let re = Regex::new(r"^.*?(\d|one|two|three|four|five|six|seven|eight|nine).*(\d|one|two|three|four|five|six|seven|eight|nine).*?$|^.*?(\d|one|two|three|four|five|six|seven|eight|nine).*?$").unwrap();
     let result: u32 = reader
         .lines()
-        .flatten()
-        .map(|line| {
+        .map_while(|line| {
+            let Ok(line) = line else { return None; };
+
             let capture = re.captures(&line).unwrap();
             let first_digit = capture.get(1).or_else(|| capture.get(3)).unwrap().as_str();
             let last_digit = capture.get(2).or_else(|| capture.get(3)).unwrap().as_str();
             let first_digit = convert_text(first_digit);
             let last_digit = convert_text(last_digit);
-            format!("{}{}", first_digit, last_digit)
+            Some(format!("{}{}", first_digit, last_digit)
                 .parse::<u32>()
-                .unwrap()
+                .unwrap())
         })
         .sum();
 
