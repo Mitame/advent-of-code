@@ -20,7 +20,9 @@ fn parse_games(buf: &mut dyn Read) -> Vec<Game> {
     reader
         .lines()
         .map_while(|line| {
-            let Ok(line) = line else { return None; };
+            let Ok(line) = line else {
+                return None;
+            };
             let (game_name, picks) = line.split_once(':').unwrap();
             let id = game_name.split_once(' ').unwrap().1.parse().unwrap();
             let picks = picks
