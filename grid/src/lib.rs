@@ -1,22 +1,7 @@
 use std::{
-    fmt::Debug,
+    fmt::{Debug, Display},
     ops::{Add, Mul, Sub},
 };
-
-#[derive(Clone)]
-pub struct Grid<T> {
-    cells: Vec<T>,
-    row_length: usize,
-}
-
-impl<T> Debug for Grid<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Grid")
-            .field("row_length", &self.row_length)
-            .field("height", &(self.cells.len() / self.row_length))
-            .finish()
-    }
-}
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Location {
@@ -112,6 +97,51 @@ impl Sub<&Offset> for &Location {
     }
 }
 
+impl Add<&Offset> for &Offset {
+    type Output = Offset;
+
+    fn add(self, rhs: &Offset) -> Self::Output {
+        Offset {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+#[derive(Clone)]
+pub struct Grid<T> {
+    cells: Vec<T>,
+    row_length: usize,
+}
+
+impl<T> Debug for Grid<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Grid")
+            .field("row_length", &self.row_length)
+            .field("height", &(self.cells.len() / self.row_length))
+            .finish()
+    }
+}
+
+impl<T> Display for Grid<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Display grid
+        let mut last_y = 0;
+        for location in self.iter_locations() {
+            if location.y != last_y {
+                last_y = location.y;
+                writeln!(f)?;
+            }
+            write!(f, "{}", self.get(&location).unwrap())?;
+        }
+        writeln!(f)?;
+        Ok(())
+    }
+}
+
 impl<T> Grid<T> {
     pub fn new(cells: impl IntoIterator<Item = T>, row_length: usize) -> Grid<T> {
         Grid {
@@ -150,5 +180,13 @@ impl<T> Grid<T> {
     pub fn is_within_bounds(&self, location: &Location) -> bool {
         let max_y = self.cells.len() / self.row_length;
         location.y < max_y && location.x < self.row_length
+    }
+
+    pub fn cells(&self) -> &'_ [T] {
+        &self.cells
+    }
+
+    pub fn into_inner(self) -> Vec<T> {
+        self.cells
     }
 }
