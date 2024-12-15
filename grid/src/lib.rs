@@ -3,6 +3,14 @@ use std::{
     ops::{Add, Mul, Sub},
 };
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash, Eq)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Location {
     pub x: usize,
@@ -49,6 +57,15 @@ impl Location {
         Location {
             x: self.x,
             y: self.y + 1,
+        }
+    }
+
+    pub fn to(&self, direction: Direction) -> Option<Location> {
+        match direction {
+            Direction::Up => self.up(),
+            Direction::Right => Some(self.right()),
+            Direction::Down => Some(self.down()),
+            Direction::Left => self.left(),
         }
     }
 }
@@ -188,5 +205,9 @@ impl<T> Grid<T> {
 
     pub fn into_inner(self) -> Vec<T> {
         self.cells
+    }
+
+    pub fn width(&self) -> usize {
+        self.row_length
     }
 }
