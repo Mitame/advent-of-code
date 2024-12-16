@@ -30,14 +30,14 @@ fn parse(buf: &mut dyn Read) -> Vec<Machine> {
         match ind {
             "Button A" => {
                 let (x, y) = data.trim().split_once(',').unwrap();
-                let x = x.trim().strip_prefix("X").unwrap().parse().unwrap();
-                let y = y.trim().strip_prefix("Y").unwrap().parse().unwrap();
+                let x = x.trim().strip_prefix('X').unwrap().parse().unwrap();
+                let y = y.trim().strip_prefix('Y').unwrap().parse().unwrap();
                 machine.button_a = Offset { x, y };
             }
             "Button B" => {
                 let (x, y) = data.trim().split_once(',').unwrap();
-                let x = x.trim().strip_prefix("X").unwrap().parse().unwrap();
-                let y = y.trim().strip_prefix("Y").unwrap().parse().unwrap();
+                let x = x.trim().strip_prefix('X').unwrap().parse().unwrap();
+                let y = y.trim().strip_prefix('Y').unwrap().parse().unwrap();
                 machine.button_b = Offset { x, y };
             }
             "Prize" => {

@@ -21,7 +21,7 @@ fn parse(buf: &mut dyn Read) -> Vec<Robot> {
             let mut position = position
                 .strip_prefix("p=")
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|v| v.parse::<usize>().unwrap());
             let position = Location {
                 x: position.next().unwrap(),
@@ -31,7 +31,7 @@ fn parse(buf: &mut dyn Read) -> Vec<Robot> {
             let mut velocity = velocity
                 .strip_prefix("v=")
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|v| v.parse::<isize>().unwrap());
             let velocity = Offset {
                 x: velocity.next().unwrap(),
