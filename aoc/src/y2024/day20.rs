@@ -1,5 +1,5 @@
 use std::{
-    collections::{BTreeMap, HashMap, HashSet, VecDeque},
+    collections::{HashMap, HashSet, VecDeque},
     fmt::Display,
     io::{BufRead, BufReader, Read},
 };
@@ -117,89 +117,20 @@ fn find_cheat_routes(
 fn part1(buf: &mut dyn Read) {
     let maze = parse(buf);
 
-    let start_position = maze
+    let start_location = maze
         .iter_locations()
         .find(|v| maze.get(v) == Some(&Cell::Start))
         .unwrap();
-    let end_position = maze
+    let end_location = maze
         .iter_locations()
         .find(|v| maze.get(v) == Some(&Cell::End))
         .unwrap();
 
-    let cell_distances = find_cell_distances(&maze, end_position);
-    let start_distance = *cell_distances.get(&start_position).unwrap();
+    let cell_distances_to_end = find_cell_distances(&maze, end_location);
 
-    // Don't allow backtracking
-    let cell_distances: HashMap<_, _> = cell_distances
-        .into_iter()
-        .filter(|(location, distance)| distance < &start_distance || location == &start_position)
-        .collect();
+    let cheat_routes = find_cheat_routes(&start_location, &cell_distances_to_end, 2);
 
-    let cheat_locations = cell_distances
-        .iter()
-        .filter(|(_, distance)| *distance < &start_distance)
-        .map(|(location, distance)| {
-            [
-                Direction::Up,
-                Direction::Left,
-                Direction::Down,
-                Direction::Right,
-            ]
-            .into_iter()
-            .filter_map(|direction| {
-                location
-                    .to(direction)
-                    .and_then(|location| location.to(direction))
-            })
-            .filter(|location| {
-                maze.get(location)
-                    .map(|cell| *cell != Cell::Wall)
-                    .unwrap_or(false)
-            })
-            .filter_map(|cheat_end_location| {
-                cell_distances
-                    .get(&cheat_end_location)
-                    .map(|cheat_end_distance| {
-                        (
-                            (location.clone(), *distance),
-                            (cheat_end_location, *cheat_end_distance),
-                        )
-                    })
-            })
-            .filter_map(|(a, b)| {
-                let diff = a.1.abs_diff(b.1) - 2;
-                if diff == 0 {
-                    None
-                } else {
-                    // Find the distance closest to the start, which will be furthest from the end
-                    if a.1 > b.1 {
-                        Some((a.0, diff))
-                    } else {
-                        Some((b.0, diff))
-                    }
-                }
-            })
-        })
-        .flatten()
-        .fold(
-            HashMap::<usize, HashSet<Location>>::new(),
-            |mut acc, (location, distance)| {
-                acc.entry(distance).or_default().insert(location);
-                acc
-            },
-        );
-
-    // let mut cheat_distances: Vec<_> = cheat_locations.keys().collect();
-    // cheat_distances.sort();
-    // for distance in cheat_distances {
-    //     eprintln!("There are {} cheats that save {} picoseconds.", cheat_locations.get(distance).unwrap().len(), distance);
-    //     dbg!(cheat_locations.get(distance).unwrap());
-    // }
-
-    let result: usize = cheat_locations
-        .iter()
-        .filter_map(|(k, v)| (*k >= 100).then_some(v.len()))
-        .sum();
+    let result: usize = cheat_routes.iter().filter(|(_, v)| **v >= 100).count();
 
     println!("Part 1: {}", result);
 }
