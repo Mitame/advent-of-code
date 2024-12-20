@@ -86,7 +86,7 @@ fn find_cheat_routes(
     cell_distances_to_end: &HashMap<Location, usize>,
     max_cheat_length: usize,
 ) -> HashMap<(Location, Location), usize> {
-    let start_distance = *cell_distances_to_end.get(&start_location).unwrap();
+    let start_distance = *cell_distances_to_end.get(start_location).unwrap();
 
     // Remove all cell distances that are futher away from the end than the start, as we don't want to cheat from those routes.
     let cell_distances_to_end: HashMap<_, _> = cell_distances_to_end
@@ -98,8 +98,7 @@ fn find_cheat_routes(
     cell_distances_to_end
         // Get the product of the cell distances with itself, limited only to
         .iter()
-        .map(|a| [a].into_iter().cycle().zip(cell_distances_to_end.iter()))
-        .flatten()
+        .flat_map(|a| [a].into_iter().cycle().zip(cell_distances_to_end.iter()))
         // Limit to items where the cheat is permitted
         .filter(|((a_location, a_distance), (b_location, b_distance))| {
             a_distance > b_distance && a_location.manhattan_distance(b_location) <= max_cheat_length
