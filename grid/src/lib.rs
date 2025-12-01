@@ -88,6 +88,10 @@ impl Location {
             Direction::Left => self.left(),
         }
     }
+
+    pub fn manhattan_distance(&self, other: &Location) -> usize {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    }
 }
 
 impl Sub<&Location> for &Location {
