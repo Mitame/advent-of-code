@@ -84,7 +84,7 @@ fn reverse_depends<'a>(
     }
     gates
         .values()
-        .filter(|gate| (&gate.input_a == on || &gate.input_b == on))
+        .filter(|gate| &gate.input_a == on || &gate.input_b == on)
         .flat_map(|g| reverse_depends(&g.output, gates, depth - 1))
         .chain([on])
         .collect()

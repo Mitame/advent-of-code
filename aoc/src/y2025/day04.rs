@@ -59,7 +59,7 @@ fn is_movable_roll(grid: &Grid<Content>, location: &Location) -> bool {
 
     let adjacent_roll_count = adjacent(location)
         .filter(|location| {
-            let content = grid.get(&location);
+            let content = grid.get(location);
             content == Some(&Content::Roll)
         })
         .count();
@@ -84,14 +84,14 @@ fn remove_rolls(grid: &Grid<Content>) -> (Grid<Content>, usize) {
                 Content::Nothing
             } else if is_movable_roll(grid, &location) {
                 removed_count += 1;
-                return Content::Nothing;
+                Content::Nothing
             } else {
-                return Content::Roll;
+                Content::Roll
             }
         }),
         grid.width(),
     );
-    return (new_grid, removed_count);
+    (new_grid, removed_count)
 }
 
 fn part2(buf: &mut dyn Read) {

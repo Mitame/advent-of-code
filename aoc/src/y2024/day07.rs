@@ -42,7 +42,7 @@ fn is_solvable(target: usize, numbers: &[usize], allow_concat: bool) -> bool {
         return true;
     }
 
-    if target % last == 0 {
+    if target.is_multiple_of(*last) {
         let mul_target = target / last;
         if is_solvable(mul_target, remaining, allow_concat) {
             return true;

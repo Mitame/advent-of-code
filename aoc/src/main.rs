@@ -1,4 +1,4 @@
-use std::{path::PathBuf, process::exit, time::Instant};
+use std::{process::exit, time::Instant};
 
 use advent_of_code::Aoc;
 use clap::Parser;

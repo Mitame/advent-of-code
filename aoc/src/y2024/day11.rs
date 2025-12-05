@@ -17,7 +17,7 @@ fn blink(number: usize) -> Vec<usize> {
         vec![1]
     } else {
         let digits = number.to_string();
-        if digits.len() % 2 == 0 {
+        if digits.len().is_multiple_of(2) {
             let mid = digits.len() / 2;
             vec![
                 digits[..mid].parse().unwrap(),

@@ -13,7 +13,7 @@ fn part1(buf: &mut dyn Read) {
                 return None;
             };
             let first_digit = line.chars().find(|c| c.is_numeric()).unwrap();
-            let last_digit = line.chars().filter(|c| c.is_numeric()).last().unwrap();
+            let last_digit = line.chars().filter(|c| c.is_numeric()).next_back().unwrap();
             Some(
                 format!("{}{}", first_digit, last_digit)
                     .parse::<u32>()

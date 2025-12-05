@@ -79,7 +79,7 @@ fn find_highest_joltage_n(bank: &str, n: usize) -> Option<u64> {
         }
     }
 
-    return None;
+    None
 }
 
 fn part2(buf: &mut dyn Read) {

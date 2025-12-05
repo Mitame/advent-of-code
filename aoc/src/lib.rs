@@ -22,8 +22,8 @@ impl Aoc {
     }
 
     pub fn get_input(&self) -> Box<dyn io::Read> {
-        let mut file =
-            std::fs::File::open(&format!("inputs/y{}/day{:02}", self.year, self.day)).unwrap();
+        let file =
+            std::fs::File::open(format!("inputs/y{}/day{:02}", self.year, self.day)).unwrap();
         Box::new(file)
     }
 }
