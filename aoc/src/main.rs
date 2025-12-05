@@ -7,7 +7,6 @@ use clap::Parser;
 struct Args {
     year: usize,
     day: usize,
-    input: Option<PathBuf>,
 }
 
 fn main() {
@@ -15,13 +14,14 @@ fn main() {
 
     for solution in inventory::iter::<Aoc> {
         if solution.year == args.year && solution.day == args.day {
-            let mut input = solution.input;
+            eprintln!("y{:04} d{:02}", solution.year, solution.day);
+            let mut input = solution.get_input();
             let part1_start = Instant::now();
             (solution.part1)(&mut input);
             let part1_time = part1_start.elapsed();
             eprintln!("(solved in {:?})", part1_time);
 
-            let mut input = solution.input;
+            let mut input = solution.get_input();
             let part2_start = Instant::now();
             (solution.part2)(&mut input);
             let part2_time = part2_start.elapsed();

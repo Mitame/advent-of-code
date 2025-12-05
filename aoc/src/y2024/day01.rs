@@ -70,13 +70,7 @@ fn part2(buf: &mut dyn std::io::Read) {
         .sum();
     println!("Part 2: {}", score);
 }
-inventory::submit!(Aoc::new(
-    2024,
-    1,
-    part1,
-    part2,
-    include_bytes!("./inputs/day01")
-));
+inventory::submit!(Aoc::new(2024, 1, part1, part2,));
 
 // fn main() {
 //     part1(list_a.clone(), list_b.clone());

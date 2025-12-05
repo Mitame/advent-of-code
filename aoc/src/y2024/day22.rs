@@ -90,13 +90,7 @@ fn part2(buf: &mut dyn Read) {
     println!("Part 2: {}", result);
 }
 
-inventory::submit!(Aoc::new(
-    2024,
-    22,
-    part1,
-    part2,
-    include_bytes!("./inputs/day22")
-));
+inventory::submit!(Aoc::new(2024, 22, part1, part2,));
 
 #[cfg(test)]
 mod tests {

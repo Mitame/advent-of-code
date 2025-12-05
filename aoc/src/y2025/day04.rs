@@ -108,13 +108,7 @@ fn part2(buf: &mut dyn Read) {
     println!("Part 2: {removed_rolls}")
 }
 
-inventory::submit!(Aoc::new(
-    2025,
-    4,
-    part1,
-    part2,
-    include_bytes!("./inputs/day04")
-));
+inventory::submit!(Aoc::new(2025, 4, part1, part2,));
 
 #[cfg(test)]
 mod tests {

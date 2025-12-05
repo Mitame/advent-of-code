@@ -302,13 +302,7 @@ fn part2(buf: &mut dyn Read) {
     println!("Part 2: {}", swaps.join(","));
 }
 
-inventory::submit!(Aoc::new(
-    2024,
-    24,
-    part1,
-    part2,
-    include_bytes!("./inputs/day24")
-));
+inventory::submit!(Aoc::new(2024, 24, part1, part2,));
 
 // Harolding
 const RANDOM_NUMBERS: &[usize] = &[

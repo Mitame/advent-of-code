@@ -171,13 +171,7 @@ fn sum_between(a: usize, b: usize) -> usize {
     }
 }
 
-inventory::submit!(Aoc::new(
-    2024,
-    9,
-    part1,
-    part2,
-    include_bytes!("./inputs/day09")
-));
+inventory::submit!(Aoc::new(2024, 9, part1, part2,));
 
 #[cfg(test)]
 mod tests {

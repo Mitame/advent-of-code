@@ -34,13 +34,7 @@ fn part1(buf: &mut dyn Read) {
 
     println!("Part 1: {}", result);
 }
-inventory::submit!(Aoc::new(
-    2024,
-    3,
-    part1,
-    part2,
-    include_bytes!("./inputs/day03")
-));
+inventory::submit!(Aoc::new(2024, 3, part1, part2,));
 
 fn part2(buf: &mut dyn Read) {
     let buffer = parse(buf);

@@ -118,13 +118,7 @@ fn part2(buf: &mut dyn Read) {
     println!("Part 2: {}", antinode_locations.len());
 }
 
-inventory::submit!(Aoc::new(
-    2024,
-    8,
-    part1,
-    part2,
-    include_bytes!("./inputs/day08")
-));
+inventory::submit!(Aoc::new(2024, 8, part1, part2,));
 
 #[cfg(test)]
 mod tests {

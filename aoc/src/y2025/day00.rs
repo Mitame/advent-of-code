@@ -11,5 +11,4 @@ inventory::submit!(Aoc::new(
     0,
     part1,
     part2,
-    include_bytes!("./inputs/day00")
 ));
