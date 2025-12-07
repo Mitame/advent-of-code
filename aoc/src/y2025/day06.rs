@@ -1,4 +1,4 @@
-use std::io::{Read, BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
 
 use crate::Aoc;
 
@@ -7,7 +7,7 @@ type Number = num_bigint::BigUint;
 #[derive(Debug)]
 enum Operation {
     Add,
-    Multiply
+    Multiply,
 }
 
 impl Operation {
@@ -37,15 +37,17 @@ fn parse(buf: &mut dyn Read) -> Input {
         if let Ok(numbers) = numbers {
             rows.push(numbers);
         } else {
-            let operations_row: Result<Vec<Operation>, ()> = cells.map(|v| match v {
-                "+" => Ok(Operation::Add),
-                "*" => Ok(Operation::Multiply),
-                v => {
-                    eprintln!("'{}'", v);
-                    eprintln!("'{}'", line);
-                    Err(())
-                }
-            }).collect();
+            let operations_row: Result<Vec<Operation>, ()> = cells
+                .map(|v| match v {
+                    "+" => Ok(Operation::Add),
+                    "*" => Ok(Operation::Multiply),
+                    v => {
+                        eprintln!("'{}'", v);
+                        eprintln!("'{}'", line);
+                        Err(())
+                    }
+                })
+                .collect();
             operations = Some(operations_row.unwrap());
         }
     }
@@ -74,7 +76,13 @@ fn part1(buf: &mut dyn Read) {
 fn part2(buf: &mut dyn Read) {
     let buf_reader = BufReader::new(buf);
     let mut lines = buf_reader.lines();
-    let mut columns: Vec<String> = lines.next().unwrap().unwrap().chars().map(|c| c.to_string()).collect();
+    let mut columns: Vec<String> = lines
+        .next()
+        .unwrap()
+        .unwrap()
+        .chars()
+        .map(|c| c.to_string())
+        .collect();
     for line in lines {
         for (i, c) in line.unwrap().chars().enumerate() {
             columns[i].push(c);
@@ -123,14 +131,8 @@ fn part2(buf: &mut dyn Read) {
         Operation::Multiply => values.iter().product(),
     };
     sum += value;
-     
 
     println!("Part 2: {}", sum);
 }
 
-inventory::submit!(Aoc::new(
-    2025,
-    6,
-    part1,
-    part2,
-));
+inventory::submit!(Aoc::new(2025, 6, part1, part2,));
