@@ -1,6 +1,6 @@
 use crate::Aoc;
 use grid::Location;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::io::{BufRead, BufReader, Read};
 
 #[derive(Debug)]
@@ -29,6 +29,13 @@ fn parse(buf: &mut dyn Read) -> Input {
     }
 }
 
+#[derive(Debug, Clone, Default)]
+struct State {
+    beams: HashMap<Location, usize>,
+    hit_splitters: HashSet<Location>,
+    timelines: usize,
+}
+
 fn step_beam(beam: &Location, splitters: &HashSet<Location>) -> (Option<Location>, Vec<Location>) {
     let hit_splitter = splitters
         .iter()
@@ -52,18 +59,25 @@ fn step_beam(beam: &Location, splitters: &HashSet<Location>) -> (Option<Location
     }
 }
 
-fn step_beams<'a>(
-    beams: impl Iterator<Item = &'a Location>,
-    splitters: &HashSet<Location>,
-) -> (HashSet<Location>, HashSet<Location>) {
-    beams.map(|beam| step_beam(beam, splitters)).fold(
-        (HashSet::new(), HashSet::new()),
-        |(mut all_hit_splitters, mut all_beams), (hit_splitter, beams)| {
-            all_hit_splitters.extend(hit_splitter.into_iter());
-            all_beams.extend(beams);
-            (all_hit_splitters, all_beams)
-        },
-    )
+fn step_beams<'a>(state: &State, splitters: &HashSet<Location>) -> State {
+    let mut new_state = State {
+        beams: Default::default(),
+        hit_splitters: state.hit_splitters.clone(),
+        timelines: state.timelines,
+    };
+
+    for (beam, strength) in &state.beams {
+        let (hit_splitter, new_beams) = step_beam(&beam, splitters);
+        if let Some(hit_splitter) = hit_splitter {
+            new_state.hit_splitters.insert(hit_splitter);
+            for beam in new_beams {
+                *new_state.beams.entry(beam).or_default() += strength;
+            }
+        } else {
+            new_state.timelines += strength;
+        }
+    }
+    new_state
 }
 
 fn part1(buf: &mut dyn Read) {
@@ -71,20 +85,35 @@ fn part1(buf: &mut dyn Read) {
         beam_start,
         splitters,
     } = parse(buf);
-    let mut beams = HashSet::from([beam_start]);
-    let mut all_hit_splitters = HashSet::new();
-    loop {
-        let (new_hits, new_beams) = step_beams(beams.iter(), &splitters);
-        if new_hits.is_empty() {
-            break;
-        }
-        all_hit_splitters.extend(new_hits);
-        beams = new_beams;
+
+    let mut state = State {
+        beams: HashMap::from([(beam_start, 1)]),
+        ..Default::default()
+    };
+
+    while !state.beams.is_empty() {
+        state = step_beams(&state, &splitters);
     }
 
-    println!("Part 1: {}", all_hit_splitters.len());
+    println!("Part 1: {}", state.hit_splitters.len());
 }
 
-fn part2(buf: &mut dyn Read) {}
+fn part2(buf: &mut dyn Read) {
+    let Input {
+        beam_start,
+        splitters,
+    } = parse(buf);
+
+    let mut state = State {
+        beams: HashMap::from([(beam_start, 1)]),
+        ..Default::default()
+    };
+
+    while !state.beams.is_empty() {
+        state = step_beams(&state, &splitters);
+    }
+
+    println!("Part 2: {}", state.timelines);
+}
 
 inventory::submit!(Aoc::new(2025, 7, part1, part2,));
