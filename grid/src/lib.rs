@@ -90,7 +90,20 @@ impl Location {
     }
 
     pub fn manhattan_distance(&self, other: &Location) -> usize {
-        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+        let diagonal = self.abs_diff(other);
+        diagonal.x + diagonal.y
+    }
+
+    pub fn abs_diff(&self, other: &Location) -> Location {
+        Location {
+            x: self.x.abs_diff(other.x),
+            y: self.y.abs_diff(other.y),
+        }
+    }
+
+    pub fn area(&self, other: &Location) -> usize {
+        let diagonal = self.abs_diff(other);
+        return diagonal.x * diagonal.y;
     }
 }
 
