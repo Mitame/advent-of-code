@@ -139,7 +139,7 @@ fn part2(buf: &mut dyn Read) {
 
     let last_con = last_con.unwrap();
 
-    println!("Part 2: {}", last_con.0.0 * last_con.1.0);
+    println!("Part 2: {}", (last_con.0).0 * (last_con.1).0);
 }
 
 inventory::submit!(Aoc::new(2025, 8, part1, part2,));

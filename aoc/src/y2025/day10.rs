@@ -72,9 +72,13 @@ fn button_to_mask(button: &[u32]) -> u32 {
         .fold(0, |acc, light_index| acc ^ (1 << light_index))
 }
 
+fn binary_selector(i: u32, count: usize) -> impl Iterator<Item = usize> {
+    (0..count).filter_map(move |b| (i & (1 << b) != 0).then_some(b as usize))
+}
+
 fn binary_select<'a, T>(i: u32, source: &'a [T]) -> Vec<&'a T> {
-    (0..source.len())
-        .filter_map(|b| (i & (1 << b) != 0).then_some(&source[b]))
+    binary_selector(i, source.len())
+        .map(|j| &source[j])
         .collect()
 }
 
