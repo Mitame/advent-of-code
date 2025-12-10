@@ -1,13 +1,18 @@
-use std::io::{Read, BufReader, BufRead};
-use std::collections::HashMap;
 use crate::Aoc;
+use std::collections::HashMap;
+use std::io::{BufRead, BufReader, Read};
 
 #[derive(Debug, Hash, PartialEq, Eq)]
 struct Vec3(u64, u64, u64);
 
 impl Vec3 {
     fn distance(&self, other: &Vec3) -> f64 {
-        Vec3(other.0.abs_diff(self.0), other.1.abs_diff(self.1), other.2.abs_diff(self.2)).absolute()
+        Vec3(
+            other.0.abs_diff(self.0),
+            other.1.abs_diff(self.1),
+            other.2.abs_diff(self.2),
+        )
+        .absolute()
     }
 
     fn absolute(&self) -> f64 {
@@ -17,26 +22,44 @@ impl Vec3 {
 
 fn parse(buf: &mut dyn Read) -> Vec<Vec3> {
     let buf_reader = BufReader::new(buf);
-    buf_reader.lines().map(|line| {
-        let line = line.unwrap();
-        let values: Vec<u64> = line.split(",").map(|v| v.parse::<u64>().unwrap()).collect();
-        Vec3(values[0], values[1], values[2])
-    }).collect()
+    buf_reader
+        .lines()
+        .map(|line| {
+            let line = line.unwrap();
+            let values: Vec<u64> = line.split(",").map(|v| v.parse::<u64>().unwrap()).collect();
+            Vec3(values[0], values[1], values[2])
+        })
+        .collect()
 }
 
 fn part1(buf: &mut dyn Read) {
     let junction_boxes = parse(buf);
-    let mut parent_groups: Vec<_> = junction_boxes.iter().map(|junction_box| vec![junction_box]).collect();
-    let mut group_link: HashMap<&Vec3, usize> = junction_boxes.iter().enumerate().map(|(i, junction_box)| (junction_box, i)).collect();
-    
+    let mut parent_groups: Vec<_> = junction_boxes
+        .iter()
+        .map(|junction_box| vec![junction_box])
+        .collect();
+    let mut group_link: HashMap<&Vec3, usize> = junction_boxes
+        .iter()
+        .enumerate()
+        .map(|(i, junction_box)| (junction_box, i))
+        .collect();
+
     // Get all distances
-    let distances: HashMap<(&Vec3, &Vec3), f64> = junction_boxes.iter().enumerate()
-        .flat_map(|(i, box_a)| junction_boxes[(i + 1)..].iter().map(move |box_b| (box_a, box_b)))
+    let distances: HashMap<(&Vec3, &Vec3), f64> = junction_boxes
+        .iter()
+        .enumerate()
+        .flat_map(|(i, box_a)| {
+            junction_boxes[(i + 1)..]
+                .iter()
+                .map(move |box_b| (box_a, box_b))
+        })
         .map(|(box_a, box_b)| ((box_a, box_b), box_a.distance(box_b)))
         .collect();
 
-    let mut distances_by_length: Vec<((&Vec3, &Vec3), f64)> = distances.iter().map(|(a, b)| (*a, *b)).collect();
-    distances_by_length.sort_by(|(_, distance_a), (_, distance_b)| distance_a.total_cmp(distance_b));
+    let mut distances_by_length: Vec<((&Vec3, &Vec3), f64)> =
+        distances.iter().map(|(a, b)| (*a, *b)).collect();
+    distances_by_length
+        .sort_by(|(_, distance_a), (_, distance_b)| distance_a.total_cmp(distance_b));
 
     dbg!(distances_by_length.len());
 
@@ -47,8 +70,8 @@ fn part1(buf: &mut dyn Read) {
         let group_b = *group_link.get(box_b).unwrap();
         if group_a == group_b {
             continue;
-        } 
-        
+        }
+
         // Link them
         let linked_group = std::mem::replace(&mut parent_groups[group_b], vec![]);
         let target_group = &mut parent_groups[group_a];
@@ -65,17 +88,32 @@ fn part1(buf: &mut dyn Read) {
 
 fn part2(buf: &mut dyn Read) {
     let junction_boxes = parse(buf);
-    let mut parent_groups: Vec<_> = junction_boxes.iter().map(|junction_box| vec![junction_box]).collect();
-    let mut group_link: HashMap<&Vec3, usize> = junction_boxes.iter().enumerate().map(|(i, junction_box)| (junction_box, i)).collect();
-    
+    let mut parent_groups: Vec<_> = junction_boxes
+        .iter()
+        .map(|junction_box| vec![junction_box])
+        .collect();
+    let mut group_link: HashMap<&Vec3, usize> = junction_boxes
+        .iter()
+        .enumerate()
+        .map(|(i, junction_box)| (junction_box, i))
+        .collect();
+
     // Get all distances
-    let distances: HashMap<(&Vec3, &Vec3), f64> = junction_boxes.iter().enumerate()
-        .flat_map(|(i, box_a)| junction_boxes[(i + 1)..].iter().map(move |box_b| (box_a, box_b)))
+    let distances: HashMap<(&Vec3, &Vec3), f64> = junction_boxes
+        .iter()
+        .enumerate()
+        .flat_map(|(i, box_a)| {
+            junction_boxes[(i + 1)..]
+                .iter()
+                .map(move |box_b| (box_a, box_b))
+        })
         .map(|(box_a, box_b)| ((box_a, box_b), box_a.distance(box_b)))
         .collect();
 
-    let mut distances_by_length: Vec<((&Vec3, &Vec3), f64)> = distances.iter().map(|(a, b)| (*a, *b)).collect();
-    distances_by_length.sort_by(|(_, distance_a), (_, distance_b)| distance_a.total_cmp(distance_b));
+    let mut distances_by_length: Vec<((&Vec3, &Vec3), f64)> =
+        distances.iter().map(|(a, b)| (*a, *b)).collect();
+    distances_by_length
+        .sort_by(|(_, distance_a), (_, distance_b)| distance_a.total_cmp(distance_b));
 
     dbg!(distances_by_length.len());
 
@@ -87,8 +125,8 @@ fn part2(buf: &mut dyn Read) {
         let group_b = *group_link.get(box_b).unwrap();
         if group_a == group_b {
             continue;
-        } 
-        
+        }
+
         last_con = Some((box_a, box_b));
         // Link them
         let linked_group = std::mem::replace(&mut parent_groups[group_b], vec![]);
@@ -98,15 +136,10 @@ fn part2(buf: &mut dyn Read) {
         }
         target_group.extend(linked_group);
     }
-    
+
     let last_con = last_con.unwrap();
 
     println!("Part 2: {}", last_con.0.0 * last_con.1.0);
 }
 
-inventory::submit!(Aoc::new(
-    2025,
-    8,
-    part1,
-    part2,
-));
+inventory::submit!(Aoc::new(2025, 8, part1, part2,));
