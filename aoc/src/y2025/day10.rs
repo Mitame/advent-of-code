@@ -1,5 +1,10 @@
 use std::io::{BufRead, BufReader, Read};
 
+use good_lp::{
+    Expression, ProblemVariables, Solution, SolverModel, Variable, constraint, default_solver,
+    variable,
+};
+
 use crate::Aoc;
 
 #[derive(Debug)]
@@ -111,6 +116,144 @@ fn part1(buf: &mut dyn Read) {
     println!("Part 1: {}", result);
 }
 
-fn part2(buf: &mut dyn Read) {}
+fn find_least_buttons_for_machine_joltage(machine: &Machine) -> u32 {
+    // Let's just solve it with Linear Programming
+    let mut problem_variables = ProblemVariables::new();
+    let variables: Vec<Variable> = machine
+        .buttons
+        .iter()
+        .map(|_| problem_variables.add(variable().integer().min(0)))
+        .collect();
+
+    let problem = problem_variables
+        .minimise(
+            variables
+                .iter()
+                .copied()
+                .fold(Expression::default(), |acc, next| acc + next),
+        )
+        .using(default_solver)
+        .with_all(
+            machine
+                .joltage_requirement
+                .iter()
+                .enumerate()
+                .map(|(i, joltage)| {
+                    let mut expression = Expression::default();
+                    for (button, variable) in machine.buttons.iter().zip(variables.iter()) {
+                        if button.contains(&(i as u32)) {
+                            expression += variable
+                        }
+                    }
+                    constraint!(expression == *joltage)
+                }),
+        );
+
+    let solution = problem.solve().unwrap();
+
+    let presses: f64 = variables.iter().map(|var| solution.value(*var)).sum();
+    dbg!(presses, presses as u32);
+    presses as u32
+}
+
+fn part2(buf: &mut dyn Read) {
+    let machines = parse(buf);
+    let result: u32 = machines
+        .iter()
+        .map(|machine| find_least_buttons_for_machine_joltage(machine))
+        .sum();
+    println!("Part 2: {}", result);
+}
 
 inventory::submit!(Aoc::new(2025, 10, part1, part2,));
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_find_least_buttons_for_machine_joltage_ex1() {
+        // [.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
+        let machine = Machine {
+            lights: vec![],
+            buttons: vec![
+                vec![3],
+                vec![1, 3],
+                vec![2],
+                vec![2, 3],
+                vec![0, 2],
+                vec![0, 1],
+            ],
+            joltage_requirement: vec![3, 4, 3, 7],
+        };
+
+        assert_eq!(find_least_buttons_for_machine_joltage(&machine), 10);
+    }
+
+    #[test]
+    fn test_find_least_buttons_for_machine_joltage_ex2() {
+        // [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
+        let machine = Machine {
+            lights: vec![],
+            buttons: vec![
+                vec![0, 2, 3, 4],
+                vec![2, 3],
+                vec![0, 4],
+                vec![0, 1, 2],
+                vec![1, 2, 3, 4],
+            ],
+            joltage_requirement: vec![7, 5, 12, 7, 2],
+        };
+
+        assert_eq!(find_least_buttons_for_machine_joltage(&machine), 12);
+    }
+
+    #[test]
+    fn test_find_least_buttons_for_machine_joltage_ex3() {
+        // [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}
+        let machine = Machine {
+            lights: vec![],
+            buttons: vec![
+                vec![0, 1, 2, 3, 4],
+                vec![0, 3, 4],
+                vec![0, 1, 2, 4, 5],
+                vec![1, 2],
+            ],
+            joltage_requirement: vec![10, 11, 11, 5, 10, 5],
+        };
+
+        assert_eq!(find_least_buttons_for_machine_joltage(&machine), 11);
+    }
+
+    #[test]
+    fn test_find_least_buttons_for_machine_joltage_l1() {
+        // [###.#.] (1,3,5) (0,2,5) (1,3) (2,3,5) (0,2,4) (0,1,2,4) {44,25,63,29,33,40}
+        let machine = Machine {
+            lights: vec![],
+            buttons: vec![
+                vec![1, 3, 5],
+                vec![0, 2, 5],
+                vec![1, 3],
+                vec![2, 3, 5],
+                vec![0, 2, 4],
+                vec![0, 1, 2, 4],
+            ],
+            joltage_requirement: vec![44, 25, 63, 29, 33, 40],
+        };
+
+        // 11, 0,2,5
+        // 4,  2,3,5
+        // 10, 1,3,5
+        // 3,  0,2,4
+        // 15, 0,1,2,4
+        // 15, 0,2,4
+        // 15, 2,3,5
+
+        // 11, 0,2,5
+        // 10, 1,3,5
+        // 15, 0,1,2,4
+        // 18, 0,2,4
+        // 19, 2,3,5
+
+        assert_eq!(find_least_buttons_for_machine_joltage(&machine), 73);
+    }
+}
